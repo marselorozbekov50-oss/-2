@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+:root{color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--g1:#fff3b0;--g2:#f5c542;--g3:#c8921a;--g4:#7a5410;--bg:#0b0805;--card:#16100a;--tx:#f3e6c4}
+*{box-sizing:border-box;margin:0}
+body{background:radial-gradient(ellipse at top,#2a1d08 0,var(--bg) 60%);color:var(--tx);font-family:Georgia,'Times New Roman',serif;min-height:100vh;overflow-x:hidden;perspective:1200px}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:0}
+main{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:28px 18px 120px;display:flex;flex-direction:column;align-items:center;gap:34px}
+.gold{background:linear-gradient(100deg,var(--g4),var(--g2) 25%,var(--g1) 50%,var(--g2) 75%,var(--g4));background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 5s linear infinite}
+@keyframes shine{to{background-position:-200% 0}}
+.orn{color:var(--g2);letter-spacing:.6em;font-size:12px;text-align:center;opacity:.8}
+/* главное фото */
+.hero{width:min(340px,78vw);aspect-ratio:3/4;position:relative;transform-style:preserve-3d;transition:transform .15s;margin-top:10px}
+.frame{position:absolute;inset:0;border-radius:200px 200px 24px 24px;padding:9px;background:conic-gradient(from 200deg,var(--g4),var(--g1),var(--g3),var(--g2),var(--g4),var(--g1),var(--g4));box-shadow:0 30px 60px #000c,0 0 70px #f5c54240,inset 0 0 12px #fff8;transform:translateZ(30px)}
+.frame::after{content:"";position:absolute;inset:-14px;border-radius:216px 216px 38px 38px;border:1px solid #f5c54266;transform:translateZ(-20px)}
+.ph{width:100%;height:100%;border-radius:192px 192px 16px 16px;background:#1b130a center/cover no-repeat;display:grid;place-items:center;text-align:center;color:var(--g2);font-size:15px;padding:20px;overflow:hidden;position:relative}
+.ph::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,#fff3b035 50%,transparent 65%);background-size:250% 100%;animation:glint 4s infinite}
+@keyframes glint{from{background-position:150% 0}to{background-position:-100% 0}}
+h1{font-size:clamp(34px,8vw,56px);text-align:center;letter-spacing:.04em;filter:drop-shadow(0 4px 6px #000)}
+.role{color:var(--g2);text-align:center;font-style:italic;margin-top:-22px;letter-spacing:.1em}
+/* карточки */
+.card{width:100%;background:linear-gradient(160deg,#1f1609,var(--card));border:1px solid #f5c54255;border-radius:22px;padding:26px;position:relative;box-shadow:0 20px 40px #000a,inset 0 1px 0 #fff3b033;transform-style:preserve-3d;transition:transform .15s}
+.card::before,.card::after{content:"❖";position:absolute;color:var(--g2);font-size:14px;top:10px}
+.card::before{left:14px}.card::after{right:14px}
+h2{font-size:26px;text-align:center;margin-bottom:14px}
+.card p{line-height:1.75;font-size:17px;text-align:center;white-space:pre-line}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
+.stat{text-align:center;padding:12px 4px;border-radius:14px;background:#0006;border:1px solid #f5c54233;transform:translateZ(20px)}
+.stat b{display:block;font-size:26px}.stat span{font-size:12px;color:#d9c48a}
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%}
+.gal .ph{border-radius:14px;aspect-ratio:1;font-size:13px;padding:6px;border:2px solid var(--g3);box-shadow:0 10px 20px #000a;transition:transform .25s}
+.gal .ph:hover{transform:translateZ(40px) scale(1.06) rotate(-2deg)}
+/* кнопки */
+.btn{font:inherit;cursor:pointer;color:#2a1b02;border:0;border-radius:14px;padding:12px 18px;font-weight:700;background:linear-gradient(180deg,var(--g1),var(--g2) 45%,var(--g3));box-shadow:0 6px 0 var(--g4),0 12px 18px #000a,inset 0 1px 0 #fff;transition:transform .12s,box-shadow .12s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:hover{transform:translateY(-3px);filter:brightness(1.08)}
+.btn:active{transform:translateY(5px);box-shadow:0 1px 0 var(--g4),0 3px 6px #000a}
+.btn.ghost{background:#0008;color:var(--g1);border:1px solid var(--g2);box-shadow:0 5px 0 #3a2807,0 10px 14px #000a}
+.poems{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:6px}
+.poems .btn{font-size:15px}
+.hint{font-size:13px;color:#b9a56e;text-align:center;margin-top:12px}
+.soc{display:flex;flex-wrap:wrap;gap:16px;justify-content:center}
+.soc a{width:68px;height:68px;border-radius:50%;display:grid;place-items:center;color:#2a1b02;background:radial-gradient(circle at 30% 25%,var(--g1),var(--g2) 45%,var(--g4));box-shadow:0 8px 0 #4a3308,0 16px 22px #000b,inset 0 2px 3px #fff;transition:.2s;transform-style:preserve-3d}
+.soc a:hover{transform:translateY(-8px) rotateX(12deg) scale(1.1);box-shadow:0 14px 0 #4a3308,0 26px 30px #000b,0 0 30px #f5c54299}
+.soc svg{width:32px;height:32px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.soc small{display:block;text-align:center;margin-top:8px;font-size:11px;color:var(--g2);letter-spacing:.08em}
+/* плеер */
+#player{position:fixed;left:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:5;display:flex;gap:8px;align-items:center;padding:8px 12px;border-radius:40px;background:#120c05ee;border:1px solid var(--g2);box-shadow:0 10px 30px #000c,0 0 20px #f5c54233}
+#player .btn{padding:8px 14px;border-radius:30px;box-shadow:0 3px 0 var(--g4)}
+#eq{display:flex;gap:2px;align-items:flex-end;height:18px}
+#eq i{width:3px;height:4px;background:var(--g2);border-radius:2px}
+.on #eq i{animation:eq .8s infinite ease-in-out alternate}
+#eq i:nth-child(2){animation-delay:.2s!important}#eq i:nth-child(3){animation-delay:.4s!important}#eq i:nth-child(4){animation-delay:.6s!important}
+@keyframes eq{to{height:18px}}
+/* окна */
+dialog{margin:auto;max-width:min(560px,92vw);width:100%;background:linear-gradient(160deg,#241a0a,#120c05);color:var(--tx);border:1px solid var(--g2);border-radius:22px;padding:24px;box-shadow:0 0 80px #f5c54255,0 30px 60px #000}
+dialog::backdrop{background:rgba(0, 0, 0, 0.733);backdrop-filter:blur(4px)}
+dialog h3{font-size:24px;text-align:center;margin-bottom:12px}
+.poem-t{white-space:pre-line;line-height:1.9;font-size:18px;text-align:center;max-height:55vh;overflow:auto;padding:6px}
+input,textarea{width:100%;font:inherit;color:var(--tx);background:#0009;border:1px solid #f5c54277;border-radius:10px;padding:10px;margin:5px 0}
+label{font-size:13px;color:var(--g2)}
+.row{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas>
+<main>
+  <div class="orn">✦ ✦ ✦</div>
+
+  <div class="hero tilt" id="hero" data-photo="main"><div class="frame"><div class="ph" id="ph-main"></div></div></div>
+
+  <h1 class="gold" id="name"></h1>
+  <div class="role" id="role">поэт · творческая личность</div>
+
+  <section class="card tilt">
+    <h2 class="gold">Обо мне</h2>
+    <p id="bio">Здесь будет рассказ о вас: кто вы, чем живёте, что любите. Нажмите на ⚙ внизу справа, чтобы изменить текст, имя и ссылки.</p>
+    <div class="stats">
+      <div class="stat"><b class="gold" id="s1">25</b><span id="l1">лет</span></div>
+      <div class="stat"><b class="gold" id="s2">50+</b><span id="l2">стихов</span></div>
+      <div class="stat"><b class="gold" id="s3">∞</b><span id="l3">вдохновения</span></div>
+    </div>
+  </section>
+
+  <div class="orn">❖ ✦ ❖</div>
+  <h2 class="gold" style="margin:0">Моя галерея</h2>
+  <div class="gal">
+    <div class="ph" data-photo="g1"></div><div class="ph" data-photo="g2"></div><div class="ph" data-photo="g3"></div>
+  </div>
+
+  <section class="card tilt">
+    <h2 class="gold">Мои стихи</h2>
+    <div class="poems" id="poems"></div>
+    <div class="hint">Нажмите на название, чтобы прочитать стих</div>
+  </section>
+
+  <div class="orn">✦ Связаться со мной ✦</div>
+  <div class="soc" id="soc"></div>
+</main>
+
+<div id="player">
+  <button class="btn" id="play">▶</button>
+  <div id="eq"><i></i><i></i><i></i><i></i></div>
+</div>
+<audio id="aud" loop></audio>
+
+<dialog id="dRead"><h3 class="gold" id="rt"></h3><div class="poem-t" id="rb"></div>
+  <div class="row"><button class="btn" onclick="dRead.close()">Закрыть</button></div></dialog>
+
+<script>
+/* ============================================================
+   ВСЁ, ЧТО НУЖНО МЕНЯТЬ — ТОЛЬКО ЗДЕСЬ (блок CONFIG)
+   ============================================================ */
+const CONFIG={
+  name:'Ваше Имя',
+  role:'поэт · творческая личность',
+  bio:'Здесь будет рассказ о вас: кто вы, чем живёте, что любите.',
+  stats:[['25','лет'],['50+','стихов'],['∞','вдохновения']],
+
+  /* ФОТО: впишите имя файла (файл лежит рядом с index.html),
+     например 'photo.jpg'. Пустые кавычки '' = место остаётся пустым. */
+  photos:{
+    main:'var3.jpg',                       // ГЛАВНОЕ ФОТО СВЕРХУ
+    gallery:['var5.jpeg','var.jpg','var4.jpg']             // ТРИ ФОТО В ГАЛЕРЕЕ
+  },
+
+  music:'var12.mp3',                        // музыка, например 'song.mp3'
+
+  /* СОЦСЕТИ: ник, ссылка или номер. Пусто '' = кнопка без ссылки */
+  social:{
+    instagram:'https://www.instagram.com/marsel_orozbekuulu?vrfl=ajBnY2g4anJqYWts',                  // @nickname
+    telegram:'t.me/orozbekovmars',                   // @nickname
+    whatsapp:'https://wa.me/qr/O76WYXDRLRC4H1',                   // 996700123456
+    youtube:'https://youtube.com/@orozbekovmars?si=VNhkg-DTq3aVJdFr',                    // ссылка на канал
+    phone:'+996777580692'                       // +996700123456
+  },
+
+  /* СТИХИ: копируйте блок {title,text} и добавляйте новые.
+     Строки внутри text разделяйте \n */
+  poems:[
+    {title:'Аялдама ',
+     text:'Сүйгүлө, сүйүлүп да көргүлө,\nСүйүүнүн сезимдерин билгиле.\nТолкундаган титиреткен сезимдин,\nЫрахатын силер дагы билгиле.'},
+    {title:'Эх Сүйүү',
+     text:'Эй махабат, сүйүгө сен мас кылбачы,\nСүйүнү кийин мага кас кылбачы.\nСезимдер ансыз деле тоюп бүттү,\nлиСени менден, мени сенден жок кылбачы. '}
+  ]
+};
+/* ============================ конец CONFIG ============================ */
+
+const $=s=>document.querySelector(s),C=CONFIG;
+$('#name').textContent=C.name;$('#role').textContent=C.role;$('#bio').textContent=C.bio;
+C.stats.slice(0,3).forEach((v,i)=>{$('#s'+(i+1)).textContent=v[0];$('#l'+(i+1)).textContent=v[1]});
+
+function setPh(el,src,label){if(src){el.style.backgroundImage=`url("${src}")`;el.textContent=''}else el.textContent=label}
+setPh($('#ph-main'),C.photos.main,'Здесь будет главное фото');
+document.querySelectorAll('.gal [data-photo]').forEach((el,i)=>setPh(el,C.photos.gallery[i],'Фото '+(i+1)));
+
+const ICON={
+instagram:'<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r=".8"/></svg>',
+telegram:'<svg viewBox="0 0 24 24"><path d="M21 4 3 11l5 2 2 6 3-4 5 4z"/><path d="m8 13 9-6"/></svg>',
+whatsapp:'<svg viewBox="0 0 24 24"><path d="M4 20l1.3-4.2A8 8 0 1 1 8.4 19z"/><path d="M9 9c0 3 3 6 6 6l1-1.5-2-1-1 .7c-.8-.4-1.5-1.1-1.9-1.9l.7-1-1-2z"/></svg>',
+youtube:'<svg viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="m10 9 5 3-5 3z"/></svg>',
+phone:'<svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>'};
+const NM={instagram:'Instagram',telegram:'Telegram',whatsapp:'WhatsApp',youtube:'YouTube',phone:'Телефон'};
+const link=(k,v)=>{v=(v||'').trim();if(!v)return'#';if(/^http/.test(v))return v;const n=v.replace('@','');
+ return{instagram:'https://instagram.com/'+n,telegram:'https://t.me/'+n,whatsapp:'https://wa.me/'+v.replace(/\D/g,''),youtube:'https://youtube.com/@'+n,phone:'tel:'+v.replace(/[^\d+]/g,'')}[k]};
+$('#soc').innerHTML=Object.keys(NM).map(k=>`<div><a href="${link(k,C.social[k])}" target="_blank" rel="noopener" aria-label="${NM[k]}">${ICON[k]}</a><small>${NM[k]}</small></div>`).join('');
+
+const esc=t=>t.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+$('#poems').innerHTML=C.poems.map((p,i)=>`<button class="btn" data-i="${i}">✦ ${esc(p.title)}</button>`).join('');
+document.querySelectorAll('#poems [data-i]').forEach(b=>b.onclick=()=>{const p=C.poems[b.dataset.i];$('#rt').textContent=p.title;$('#rb').textContent=p.text;dRead.showModal()});
+
+const aud=$('#aud'),pl=$('#player');
+if(C.music)aud.src=C.music;
+$('#play').onclick=()=>{if(!aud.src){alert('Музыка не добавлена: впишите файл в CONFIG → music');return}aud.paused?aud.play():aud.pause()};
+aud.onplay=()=>{pl.classList.add('on');$('#play').textContent='❚❚'};
+aud.onpause=()=>{pl.classList.remove('on');$('#play').textContent='▶'};
+
+document.querySelectorAll('.tilt').forEach(el=>{
+ el.addEventListener('mousemove',e=>{const r=el.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;el.style.transform=`rotateY(${x*18}deg) rotateX(${-y*18}deg)`});
+ el.addEventListener('mouseleave',()=>el.style.transform='')});
+
+const cv=$('#fx'),cx=cv.getContext('2d');let W,H,pts=[];
+function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight}rs();addEventListener('resize',rs);
+for(let i=0;i<55;i++)pts.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2.2+.4,v:Math.random()*.5+.15,a:Math.random()*6});
+(function loop(){cx.clearRect(0,0,W,H);for(const p of pts){p.y-=p.v;p.a+=.03;if(p.y<-5){p.y=H+5;p.x=Math.random()*W}
+ cx.globalAlpha=.35+.35*Math.sin(p.a);cx.fillStyle='#f5c542';cx.shadowColor='#f5c542';cx.shadowBlur=8;cx.beginPath();cx.arc(p.x+Math.sin(p.a)*6,p.y,p.r,0,7);cx.fill()}requestAnimationFrame(loop)})();
+</script>
+</body>
+</html>
